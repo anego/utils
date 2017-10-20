@@ -1,0 +1,71 @@
+
+group = 'io.github.anego'
+version = '1.0-SNAPSHOT'
+
+apply plugin: 'java-library'
+apply plugin: 'eclipse'
+apply plugin: 'maven'
+
+ext {
+	projectname = 'utils'
+	defaultEncoding = 'UTF-8'
+	jdkVersion = 1.7
+}
+
+[compileJava, compileTestJava]*.options*.encoding = defaultEncoding
+
+sourceCompatibility = jdkVersion
+targetCompatibility = jdkVersion
+
+if (JavaVersion.VERSION_1_7 < JavaVersion.current() ) {
+	if (System.env.JDK7_HOME) {
+		[compileJava, compileTestJava]*.options*.bootClasspath = "$System.env.JDK7_HOME/jre/lib/rt.jar"
+	} else {
+		throw new GradleException('環境変数の JAVA_HOME か JDK7_HOME に JDK7 のパスを設定してね')
+	}
+}
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.6'
+
+	// ----- Develop
+	compileOnly group: 'org.projectlombok', name: 'lombok', version: 'latest.release'
+	testCompile 'junit:junit:4.12'
+}
+
+defaultTasks 'clean', 'jar', 'javadoc'
+
+javadoc {
+	options.charSet = 'UTF-8'
+	options.encoding = 'UTF-8'
+}
+
+task sourcesJar(type: Jar, dependsOn:classes) {
+	classifier = 'sources'
+	from sourceSets.main.allSource
+}
+task javadocJar(type: Jar, dependsOn:javadoc) {
+	classifier = 'javadoc'
+	from javadoc.destinationDir
+}
+
+artifacts {
+	archives sourcesJar
+	archives javadocJar
+}
+
+// mavenリポジトリ登録用
+uploadArchives {
+	repositories {
+		mavenDeployer {
+			repository url: "file://${projectDir}/repository"
+			pom.version = '1.0.0'
+			pom.groupId = 'io.github.anego'
+			pom.artifactId = 'utils'
+		}
+	}
+}
