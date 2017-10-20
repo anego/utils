@@ -1,6 +1,19 @@
 # utils
 自分用ユーティリティ
 
+## Installation
+
+```groovy
+repositories {
+	maven {
+		url 'https://anego.github.io/utils/repository'
+	}
+}
+dependencies {
+	compile 'io.github.anego:utils:1.0.0'
+}
+```
+
 ## Licence
 
 [MIT](https://github.com/tcnksm/tool/blob/master/LICENCE)
