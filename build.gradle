@@ -1,15 +1,16 @@
 
-group = 'io.github.anego'
-version = '1.0-SNAPSHOT'
+group = thisGroup
+version = thisVersion
 
 apply plugin: 'java-library'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
+apply plugin: 'jacoco'
 
 ext {
 	projectname = 'utils'
 	defaultEncoding = 'UTF-8'
-	jdkVersion = 1.7
+	jdkVersion = 1.8
 }
 
 [compileJava, compileTestJava]*.options*.encoding = defaultEncoding
@@ -17,20 +18,13 @@ ext {
 sourceCompatibility = jdkVersion
 targetCompatibility = jdkVersion
 
-if (JavaVersion.VERSION_1_7 < JavaVersion.current() ) {
-	if (System.env.JDK7_HOME) {
-		[compileJava, compileTestJava]*.options*.bootClasspath = "$System.env.JDK7_HOME/jre/lib/rt.jar"
-	} else {
-		throw new GradleException('環境変数の JAVA_HOME か JDK7_HOME に JDK7 のパスを設定してね')
-	}
-}
-
 repositories {
     jcenter()
 }
 
 dependencies {
 	compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.6'
+	compile group: 'com.google.code.gson', name: 'gson', version: '2.8.2'
 
 	// ----- Develop
 	compileOnly group: 'org.projectlombok', name: 'lombok', version: 'latest.release'
@@ -63,9 +57,9 @@ uploadArchives {
 	repositories {
 		mavenDeployer {
 			repository url: "file://${projectDir}/repository"
-			pom.version = '1.0.0'
-			pom.groupId = 'io.github.anego'
-			pom.artifactId = 'utils'
+			pom.version = thisVersion
+			pom.groupId = thisGroup
+			pom.artifactId = thisName
 		}
 	}
 }

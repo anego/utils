@@ -1,8 +1,9 @@
 package io.github.anego.utils;
 
 import java.math.BigDecimal;
+import java.text.Normalizer;
+import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
-import lombok.NoArgsConstructor;
 
 /**
  * 数値系オブジェクトのユーティリティ.
@@ -10,7 +11,6 @@ import lombok.NoArgsConstructor;
  * @author anego &#60;anego@project-life.net&#62;
  *
  */
-@NoArgsConstructor
 public final class NumberUtils {
 
     /**
@@ -78,7 +78,7 @@ public final class NumberUtils {
      *         false:1以上
      */
     public static boolean isEmpty(final Long val) {
-        if (val == null || val.intValue() < 0) {
+        if (val == null || val.longValue() < 0) {
             return true;
         }
 
@@ -307,13 +307,34 @@ public final class NumberUtils {
     }
 
     /**
-     * 文字列を数値に変換. {@link org.apache.commons.lang3.math.NumberUtils#toInt(String)}.
+     * 文字列を数値に変換.<br>
+     * 10進数のみ.<br>
+     * 変換できなければ0.
      *
      * @param val 変換する文字列
      * @return 変換後数値
      */
     public static int toInt(final String val) {
-        return org.apache.commons.lang3.math.NumberUtils.toInt(val);
+
+        if (val == null) {
+            return 0;
+        }
+
+        String str = Normalizer.normalize(val, Normalizer.Form.NFKC);
+
+        if (!org.apache.commons.lang3.math.NumberUtils.isCreatable(str)) {
+            return 0;
+        }
+
+        BigDecimal decimal = new BigDecimal(val);
+        double dbl = decimal.doubleValue();
+        if (dbl > Integer.MAX_VALUE) {
+            return Integer.MAX_VALUE;
+        } else if (dbl < Integer.MIN_VALUE) {
+            return Integer.MIN_VALUE;
+        }
+
+        return decimal.intValue();
     }
 
     /**
@@ -350,9 +371,21 @@ public final class NumberUtils {
      * @return 変換後
      */
     public static int toInt(final Integer val) {
+        return NumberUtils.toInt(val, 0);
+    }
+
+    /**
+     * IntegerをNULLチェックしてintに変換.
+     *
+     * @param val 変換する数値
+     * @param defaultValue NULLの場合のデフォルト値
+     * @return 変換後
+     */
+    public static int toInt(final Integer val, int defaultValue) {
         if (val == null) {
-            return 0;
+            return defaultValue;
         }
+
         return val.intValue();
     }
 
@@ -363,8 +396,19 @@ public final class NumberUtils {
      * @return 変換後
      */
     public static int toInt(final Long val) {
+        return NumberUtils.toInt(val, 0);
+    }
+
+    /**
+     * LongをNULLチェックしてintにするだけ.
+     *
+     * @param val 変換する数値
+     * @param defaultValue NULLの場合のデフォルト値
+     * @return 変換後
+     */
+    public static int toInt(final Long val, int defaultValue) {
         if (val == null) {
-            return 0;
+            return defaultValue;
         }
 
         return val.intValue();
@@ -412,6 +456,8 @@ public final class NumberUtils {
 
         if (val > Short.MAX_VALUE) {
             return Short.valueOf(Short.MAX_VALUE);
+        } else if (val < Short.MIN_VALUE) {
+            return Short.valueOf(Short.MIN_VALUE);
         }
 
         return Short.valueOf((short) val);
@@ -455,12 +501,13 @@ public final class NumberUtils {
 
         if (val == null) {
             return Short.valueOf(defaultval);
-        }
-        if (val.intValue() > Short.MAX_VALUE) {
+        } else if (val.intValue() > Short.MAX_VALUE) {
             return Short.valueOf(Short.MAX_VALUE);
+        } else if (val.intValue() < Short.MIN_VALUE) {
+            return Short.valueOf(Short.MIN_VALUE);
         }
 
-        return Short.valueOf((short) val.intValue());
+        return Short.valueOf(val.shortValue());
     }
 
     /**
@@ -470,6 +517,12 @@ public final class NumberUtils {
      * @return 変換後数値
      */
     public static Short toShort(long val) {
+
+        if (val > Short.MAX_VALUE) {
+            return Short.valueOf(Short.MAX_VALUE);
+        } else if (val < Short.MIN_VALUE) {
+            return Short.valueOf(Short.MIN_VALUE);
+        }
 
         return Short.valueOf(Long.valueOf(val).shortValue());
     }
@@ -482,7 +535,11 @@ public final class NumberUtils {
      */
     public static Short toShort(Long val) {
         if (val == null) {
-            return Short.valueOf((short) 0);
+            return null;
+        } else if (val.longValue() > Short.MAX_VALUE) {
+            return Short.valueOf(Short.MAX_VALUE);
+        } else if (val.longValue() < Short.MIN_VALUE) {
+            return Short.valueOf(Short.MIN_VALUE);
         }
 
         return Short.valueOf(val.shortValue());
@@ -495,11 +552,26 @@ public final class NumberUtils {
      * @return 変換後の値
      */
     public static Short toShort(final String val) {
+
         if (StringUtils.isBlank(val)) {
-            return Short.valueOf((short) 0);
+            return null;
         }
 
-        return Short.valueOf(org.apache.commons.lang3.math.NumberUtils.toShort(val));
+        String str = Normalizer.normalize(val, Normalizer.Form.NFKC);
+
+        if (!org.apache.commons.lang3.math.NumberUtils.isCreatable(str)) {
+            return null;
+        }
+
+        BigDecimal decimal = new BigDecimal(val);
+        double dbl = decimal.doubleValue();
+        if (dbl > Short.MAX_VALUE) {
+            return Short.valueOf(Short.MAX_VALUE);
+        } else if (dbl < Short.MIN_VALUE) {
+            return Short.valueOf(Short.MIN_VALUE);
+        }
+
+        return Short.valueOf(decimal.shortValue());
     }
 
     /**
@@ -511,8 +583,25 @@ public final class NumberUtils {
      */
     public static Short toShort(final String val, final int defaultValue) {
 
-        return Short.valueOf(
-                org.apache.commons.lang3.math.NumberUtils.toShort(val, (short) defaultValue));
+        if (StringUtils.isBlank(val)) {
+            return Short.valueOf((short) defaultValue);
+        }
+
+        String str = Normalizer.normalize(val, Normalizer.Form.NFKC);
+
+        if (!org.apache.commons.lang3.math.NumberUtils.isCreatable(str)) {
+            return Short.valueOf((short) defaultValue);
+        }
+
+        BigDecimal decimal = new BigDecimal(val);
+        double dbl = decimal.doubleValue();
+        if (dbl > Short.MAX_VALUE) {
+            return Short.valueOf(Short.MAX_VALUE);
+        } else if (dbl < Short.MIN_VALUE) {
+            return Short.valueOf(Short.MIN_VALUE);
+        }
+
+        return Short.valueOf(decimal.shortValue());
     }
 
     /**
@@ -529,7 +618,7 @@ public final class NumberUtils {
             return Integer.valueOf(defaultValue);
         }
 
-        return new Integer(val.intValue());
+        return Integer.valueOf(val.intValue());
     }
 
     /**
@@ -546,7 +635,7 @@ public final class NumberUtils {
             return Integer.valueOf(defaultValue);
         }
 
-        return new Integer(val.intValue());
+        return val;
     }
 
     /**
@@ -557,7 +646,13 @@ public final class NumberUtils {
      */
     public static Integer toInteger(final long val) {
 
-        return new Integer(Long.valueOf(val).intValue());
+        if (val > Integer.MAX_VALUE) {
+            return Integer.valueOf(Integer.MAX_VALUE);
+        } else if (val < Integer.MIN_VALUE) {
+            return Integer.valueOf(Integer.MIN_VALUE);
+        }
+
+        return Integer.valueOf(Long.valueOf(val).intValue());
     }
 
     /**
@@ -572,7 +667,13 @@ public final class NumberUtils {
             return null;
         }
 
-        return new Integer(val.intValue());
+        if (val.longValue() > Integer.MAX_VALUE) {
+            return Integer.valueOf(Integer.MAX_VALUE);
+        } else if (val.longValue() < Integer.MIN_VALUE) {
+            return Integer.valueOf(Integer.MIN_VALUE);
+        }
+
+        return Integer.valueOf(val.intValue());
     }
 
     /**
@@ -587,7 +688,21 @@ public final class NumberUtils {
             return null;
         }
 
-        return Integer.valueOf(org.apache.commons.lang3.math.NumberUtils.toInt(val));
+        String str = Normalizer.normalize(val, Normalizer.Form.NFKC);
+
+        if (!org.apache.commons.lang3.math.NumberUtils.isCreatable(str)) {
+            return Integer.valueOf(0);
+        }
+
+        BigDecimal decimal = new BigDecimal(val);
+        double dbl = decimal.doubleValue();
+        if (dbl > Integer.MAX_VALUE) {
+            return Integer.valueOf(Integer.MAX_VALUE);
+        } else if (dbl < Integer.MIN_VALUE) {
+            return Integer.valueOf(Integer.MIN_VALUE);
+        }
+
+        return Integer.valueOf(decimal.intValue());
     }
 
     /**
@@ -597,11 +712,8 @@ public final class NumberUtils {
      * @return 変換後
      */
     public static Integer toInteger(final Byte val) {
-        if (val == null) {
-            return null;
-        }
-
-        return new Integer(val.intValue());
+        return Optional.ofNullable(val).map(mapper -> Integer.valueOf(mapper.intValue()))
+                .orElse(null);
     }
 
     /**
@@ -611,10 +723,8 @@ public final class NumberUtils {
      * @return 変換後
      */
     public static Integer toInteger(final Short val) {
-        if (val == null) {
-            return null;
-        }
-        return Integer.valueOf(val.intValue());
+        return Optional.ofNullable(val).map(mapper -> Integer.valueOf(mapper.intValue()))
+                .orElse(null);
     }
 
     /**
@@ -625,12 +735,14 @@ public final class NumberUtils {
      * @return 変換後
      */
     public static Integer toInteger(final BigDecimal val) {
-
-        if (val == null) {
-            return Integer.valueOf(0);
-        }
-
-        return Integer.valueOf(val.intValue());
+        return Optional.ofNullable(val).map(mapper -> {
+            if (mapper.longValue() > Integer.MAX_VALUE) {
+                return Integer.valueOf(Integer.MAX_VALUE);
+            } else if (mapper.longValue() < Integer.MIN_VALUE) {
+                return Integer.valueOf(Integer.MIN_VALUE);
+            }
+            return Integer.valueOf(val.intValue());
+        }).orElse(null);
     }
 
     /**
@@ -660,7 +772,21 @@ public final class NumberUtils {
             return null;
         }
 
-        return Long.valueOf(org.apache.commons.lang3.math.NumberUtils.toLong(val));
+        String str = Normalizer.normalize(val, Normalizer.Form.NFKC);
+
+        if (!org.apache.commons.lang3.math.NumberUtils.isCreatable(str)) {
+            return null;
+        }
+
+        BigDecimal decimal = new BigDecimal(val);
+        double dbl = decimal.doubleValue();
+        if (dbl > Long.MAX_VALUE) {
+            return Long.valueOf(Long.MAX_VALUE);
+        } else if (dbl < Long.MIN_VALUE) {
+            return Long.valueOf(Long.MIN_VALUE);
+        }
+
+        return Long.valueOf(decimal.longValue());
     }
 
     /**
@@ -671,7 +797,11 @@ public final class NumberUtils {
      */
     public static Byte toByte(final Short val) {
         if (val == null) {
-            return Byte.valueOf((byte) 0);
+            return null;
+        } else if (val.shortValue() > Byte.MAX_VALUE) {
+            return Byte.valueOf(Byte.MAX_VALUE);
+        } else if (val.shortValue() < Byte.MIN_VALUE) {
+            return Byte.valueOf(Byte.MIN_VALUE);
         }
 
         return Byte.valueOf(val.byteValue());
@@ -689,7 +819,21 @@ public final class NumberUtils {
             return 0;
         }
 
-        return org.apache.commons.lang3.math.NumberUtils.toFloat(val);
+        String str = Normalizer.normalize(val, Normalizer.Form.NFKC);
+
+        if (!org.apache.commons.lang3.math.NumberUtils.isCreatable(str)) {
+            return 0;
+        }
+
+        BigDecimal decimal = new BigDecimal(val);
+        double dbl = decimal.doubleValue();
+        if (dbl > Float.MAX_VALUE) {
+            return Float.MAX_VALUE;
+        } else if (dbl < Float.MIN_VALUE) {
+            return Float.MIN_VALUE;
+        }
+
+        return decimal.floatValue();
     }
 
     /**
@@ -716,7 +860,7 @@ public final class NumberUtils {
 
         try {
             Integer.parseInt(val);
-        } catch (NumberFormatException exc) {
+        } catch (@SuppressWarnings("unused") NumberFormatException exc) {
             return false;
         }
 
@@ -733,7 +877,7 @@ public final class NumberUtils {
 
         try {
             Long.parseLong(val);
-        } catch (NumberFormatException exc) {
+        } catch (@SuppressWarnings("unused") NumberFormatException exc) {
             return false;
         }
 

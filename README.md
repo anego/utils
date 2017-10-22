@@ -23,6 +23,9 @@ dependencies {
 ### [apache / commons-lang](https://commons.apache.org/proper/commons-logging/)
 * Apache License 2.0 [http://www.apache.org/licenses/](http://www.apache.org/licenses/)
 
+### [google / guava](https://github.com/google/guava)
+* Apache License 2.0 [http://www.apache.org/licenses/](http://www.apache.org/licenses/)
+
 ## Author
 
 [anego](https://github.com/anego)
