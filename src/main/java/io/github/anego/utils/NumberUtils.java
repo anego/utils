@@ -11,7 +11,9 @@ import org.apache.commons.lang3.StringUtils;
  * @author anego &#60;anego@project-life.net&#62;
  *
  */
-public final class NumberUtils {
+public class NumberUtils {
+
+    private NumberUtils() {}
 
     /**
      * <p>
@@ -778,15 +780,11 @@ public final class NumberUtils {
             return null;
         }
 
-        BigDecimal decimal = new BigDecimal(val);
-        double dbl = decimal.doubleValue();
-        if (dbl > Long.MAX_VALUE) {
-            return Long.valueOf(Long.MAX_VALUE);
-        } else if (dbl < Long.MIN_VALUE) {
-            return Long.valueOf(Long.MIN_VALUE);
+        try {
+            return Long.valueOf(Long.parseLong(str));
+        } catch (@SuppressWarnings("unused") NumberFormatException exc) {
+            return Long.valueOf(0);
         }
-
-        return Long.valueOf(decimal.longValue());
     }
 
     /**

@@ -1,11 +1,36 @@
 package io.github.anego.utils;
 
+import static org.hamcrest.CoreMatchers.*;
+import static org.hamcrest.MatcherAssert.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import junit.framework.TestCase;
 import org.junit.Test;
 
 @SuppressWarnings("javadoc")
 public class NumberUtilsTest extends TestCase {
+
+    @Test
+    public void testNumberUtils() {
+        try {
+            Constructor<?>[] constructors = NumberUtils.class.getDeclaredConstructors();
+
+            assertEquals(Integer.valueOf(constructors.length), Integer.valueOf(1));
+
+            Constructor<?> defaultConstructor = constructors[0];
+            assertEquals(Integer.valueOf(defaultConstructor.getParameterTypes().length),
+                    Integer.valueOf(0));
+            assertTrue(Modifier.isPrivate(defaultConstructor.getModifiers()));
+
+            defaultConstructor.setAccessible(true);
+            Object instance = defaultConstructor.newInstance();
+            assertNotNull(instance);
+            assertThat(instance, instanceOf(NumberUtils.class));
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
 
     @Test
     public void testIsEmptyShort() {
@@ -196,10 +221,8 @@ public class NumberUtilsTest extends TestCase {
     public void testToShortInt() {
         assertEquals(NumberUtils.toShort(0), Short.valueOf((short) 0));
         assertEquals(NumberUtils.toShort(1), Short.valueOf((short) 1));
-        assertEquals(NumberUtils.toShort(Integer.valueOf(Integer.MAX_VALUE)),
-                Short.valueOf(Short.MAX_VALUE));
-        assertEquals(NumberUtils.toShort(Integer.valueOf(Integer.MIN_VALUE)),
-                Short.valueOf(Short.MIN_VALUE));
+        assertEquals(NumberUtils.toShort(Integer.MAX_VALUE), Short.valueOf(Short.MAX_VALUE));
+        assertEquals(NumberUtils.toShort(Integer.MIN_VALUE), Short.valueOf(Short.MIN_VALUE));
     }
 
     @Test
@@ -384,6 +407,8 @@ public class NumberUtilsTest extends TestCase {
         assertEquals(NumberUtils.toLong("１"), Long.valueOf(1L));
         assertEquals(NumberUtils.toLong("" + Long.MIN_VALUE), Long.valueOf(Long.MIN_VALUE));
         assertEquals(NumberUtils.toLong("" + Long.MAX_VALUE), Long.valueOf(Long.MAX_VALUE));
+        assertEquals(NumberUtils.toLong("" + Double.MIN_VALUE), Long.valueOf(0L));
+        assertEquals(NumberUtils.toLong("" + Double.MAX_VALUE), Long.valueOf(0L));
         assertNull(NumberUtils.toLong("a"));
     }
 
@@ -409,84 +434,50 @@ public class NumberUtilsTest extends TestCase {
         assertEquals(NumberUtils.toFloat("a"), 0f, 0f);
     }
 
-    // @Test
-    // public void testToDouble() {
-    // fail("まだ実装されていません");
-    // }
-    //
-    // @Test
-    // public void testIsInteger() {
-    // fail("まだ実装されていません");
-    // }
-    //
-    // @Test
-    // public void testIsLong() {
-    // fail("まだ実装されていません");
-    // }
-    //
-    // @Test
-    // public void testDecimalScale() {
-    // fail("まだ実装されていません");
-    // }
-    //
-    // @Test
-    // public void testObject() {
-    // fail("まだ実装されていません");
-    // }
-    //
-    // @Test
-    // public void testGetClass() {
-    // fail("まだ実装されていません");
-    // }
-    //
-    // @Test
-    // public void testHashCode() {
-    // fail("まだ実装されていません");
-    // }
-    //
-    // @Test
-    // public void testEquals() {
-    // fail("まだ実装されていません");
-    // }
-    //
-    // @Test
-    // public void testClone() {
-    // fail("まだ実装されていません");
-    // }
-    //
-    // @Test
-    // public void testToString() {
-    // fail("まだ実装されていません");
-    // }
-    //
-    // @Test
-    // public void testNotify() {
-    // fail("まだ実装されていません");
-    // }
-    //
-    // @Test
-    // public void testNotifyAll() {
-    // fail("まだ実装されていません");
-    // }
-    //
-    // @Test
-    // public void testWaitLong() {
-    // fail("まだ実装されていません");
-    // }
-    //
-    // @Test
-    // public void testWaitLongInt() {
-    // fail("まだ実装されていません");
-    // }
-    //
-    // @Test
-    // public void testWait() {
-    // fail("まだ実装されていません");
-    // }
-    //
-    // @Test
-    // public void testFinalize() {
-    // fail("まだ実装されていません");
-    // }
+    @Test
+    public void testToDouble() {
+        assertEquals(NumberUtils.toDouble((Double) null), 0d, 0f);
+        assertEquals(NumberUtils.toDouble(Double.valueOf(0d)), 0d, 0f);
+        assertEquals(NumberUtils.toDouble(Double.valueOf(1d)), 1d, 0f);
+        assertEquals(NumberUtils.toDouble(Double.valueOf(Double.MIN_VALUE)), Double.MIN_VALUE, 0f);
+        assertEquals(NumberUtils.toDouble(Double.valueOf(Double.MAX_VALUE)), Double.MAX_VALUE, 0f);
+    }
+
+    @Test
+    public void testIsInteger() {
+        assertFalse(NumberUtils.isInteger((String) null));
+        assertFalse(NumberUtils.isInteger(""));
+        assertTrue(NumberUtils.isInteger("1"));
+        assertTrue(NumberUtils.isInteger("１"));
+        assertTrue(NumberUtils.isInteger("" + Integer.MAX_VALUE));
+        assertTrue(NumberUtils.isInteger("" + Integer.MIN_VALUE));
+        assertFalse(NumberUtils.isInteger("" + Long.MIN_VALUE));
+        assertFalse(NumberUtils.isInteger("" + Long.MAX_VALUE));
+        assertFalse(NumberUtils.isInteger("" + Float.MIN_VALUE));
+        assertFalse(NumberUtils.isInteger("" + Float.MAX_VALUE));
+        assertFalse(NumberUtils.isInteger("ff"));
+    }
+
+    @Test
+    public void testIsLong() {
+        assertFalse(NumberUtils.isLong((String) null));
+        assertFalse(NumberUtils.isLong(""));
+        assertTrue(NumberUtils.isLong("1"));
+        assertTrue(NumberUtils.isLong("１"));
+        assertTrue(NumberUtils.isLong("" + Long.MIN_VALUE));
+        assertTrue(NumberUtils.isLong("" + Long.MAX_VALUE));
+        assertFalse(NumberUtils.isLong("" + Double.MIN_VALUE));
+        assertFalse(NumberUtils.isLong("" + Double.MAX_VALUE));
+        assertFalse(NumberUtils.isLong("aa"));
+    }
+
+    @Test
+    public void testDecimalScale() {
+        assertEquals(NumberUtils.decimalScale(1.12345d, 0), 1d, 0f);
+        assertEquals(NumberUtils.decimalScale(1.14d, 1), 1.1d, 0f);
+        assertEquals(NumberUtils.decimalScale(1.15d, 1), 1.2d, 0f);
+        assertEquals(NumberUtils.decimalScale(1.123456d, 5), 1.12346d, 0f);
+        assertEquals(NumberUtils.decimalScale(1.1234d, 5), 1.12340d, 0f);
+    }
 
 }
