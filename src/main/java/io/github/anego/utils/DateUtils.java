@@ -13,6 +13,8 @@ import java.util.Date;
  */
 public final class DateUtils {
 
+    private DateUtils() {}
+
     /**
      * 文字列を指定フォーマッタでパースして日付型を返す.<br>
      * 変換できない場合はNULLを返す.
@@ -24,7 +26,12 @@ public final class DateUtils {
     public static Date parse(String string, DateTimeFormatter dtfJsonfilename) {
         Date createdatetime = null;
         try {
-            LocalDateTime localdate = LocalDateTime.parse(string, dtfJsonfilename);
+            LocalDateTime localdate;
+            if (dtfJsonfilename == null) {
+                localdate = LocalDateTime.parse(string);
+            } else {
+                localdate = LocalDateTime.parse(string, dtfJsonfilename);
+            }
             createdatetime = Date.from(localdate.atZone(ZoneId.systemDefault()).toInstant());
         } catch (Exception exc) {
             throw exc;
