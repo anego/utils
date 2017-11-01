@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import javax.annotation.Nullable;
 
 /**
  * 日付関連の共通処理.
@@ -48,10 +49,14 @@ public final class DateUtils {
      * @return 日付
      */
     public static LocalDateTime parseLocalDateTime(String string,
-            DateTimeFormatter dtfJsonfilename) {
+            @Nullable DateTimeFormatter dtfJsonfilename) {
         LocalDateTime localdate = null;
         try {
-            localdate = LocalDateTime.parse(string, dtfJsonfilename);
+            if (dtfJsonfilename == null) {
+                localdate = LocalDateTime.parse(string);
+            } else {
+                localdate = LocalDateTime.parse(string, dtfJsonfilename);
+            }
         } catch (Exception exc) {
             throw exc;
         }
