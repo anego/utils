@@ -26,6 +26,9 @@ dependencies {
 ### [google / guava](https://github.com/google/guava)
 * Apache License 2.0 [http://www.apache.org/licenses/](http://www.apache.org/licenses/)
 
+### [google / gson](https://github.com/google/gson)
+* Apache License 2.0 [http://www.apache.org/licenses/](http://www.apache.org/licenses/)
+
 ## Author
 
 [anego](https://github.com/anego)
