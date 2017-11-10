@@ -1,8 +1,7 @@
 package io.github.anego.utils;
 
 import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.*;
+import static org.hamcrest.MatcherAssert.*;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.time.LocalDateTime;
@@ -11,10 +10,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
+import junit.framework.TestCase;
 import org.junit.Test;
 
 @SuppressWarnings("javadoc")
-public class DateUtilsTest {
+public class DateUtilsTest extends TestCase {
 
     @Test
     public void testDateUtils() {

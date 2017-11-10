@@ -9,6 +9,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import lombok.AllArgsConstructor;
@@ -20,6 +21,8 @@ import lombok.AllArgsConstructor;
  *
  */
 public final class JsonUtils {
+
+    private JsonUtils() {}
 
     /**
      * keyでマップされた値をStringとして取り出す。<br>
@@ -33,14 +36,9 @@ public final class JsonUtils {
 
         JsonElement value = json.get(key);
         return getValue(value, v -> {
-            if (v == null) {
-                return null;
-            } else if (v.isJsonPrimitive() && v.getAsJsonPrimitive().isString()) {
+            if (v != null && v.isJsonPrimitive() && v.getAsJsonPrimitive().isString()) {
                 return v.getAsString();
             }
-            // else {
-            // log.error("key:" + key + "/ JsonType:" + printClass(v));
-            // }
             return null;
         });
     }
@@ -56,16 +54,6 @@ public final class JsonUtils {
     public static Integer getInteger(JsonObject json, String key) {
 
         JsonElement value = json.get(key);
-        // return getValue(value, v -> {
-        // if (v == null) {
-        // return null;
-        // } else if (v instanceof JsonNumber) {
-        // return Integer.valueOf(((JsonNumber) v).intValue());
-        // } else {
-        // log.error("key:" + key + "/ JsonType:" + v.getValueType().toString());
-        // }
-        // return null;
-        // });
 
         return JsonUtils.getInteger(value);
     }
@@ -78,16 +66,12 @@ public final class JsonUtils {
      * @return 取り出した値
      */
     public static Integer getInteger(JsonElement val) {
-        val.getAsNumber();
-        if (val.isJsonNull()) {
+        return Optional.ofNullable(val).map(v -> {
+            if (!v.isJsonNull() && v.isJsonPrimitive() && v.getAsJsonPrimitive().isNumber()) {
+                return Integer.valueOf(v.getAsInt());
+            }
             return null;
-        } else if (val.isJsonPrimitive() && val.getAsJsonPrimitive().isNumber()) {
-
-            return Integer.valueOf(val.getAsInt());
-        }
-        // log.error("JsonType:" + printClass(val));
-
-        return null;
+        }).orElse(null);
     }
 
     /**
@@ -132,8 +116,7 @@ public final class JsonUtils {
      * @return 取り出した日時
      */
     public static Date getDate(JsonElement val, DateTimeFormatter formatter) {
-        val.getAsNumber();
-        if (val.isJsonNull()) {
+        if (val == null || val.isJsonNull()) {
             return null;
         } else if (val.isJsonPrimitive()) {
             if (val.getAsJsonPrimitive().isNumber()) {
@@ -143,7 +126,6 @@ public final class JsonUtils {
                 return Date.from(localdate.atZone(ZoneId.systemDefault()).toInstant());
             }
         }
-        // log.error("JsonType:" + printClass(val));
 
         return null;
     }
@@ -176,8 +158,7 @@ public final class JsonUtils {
      * @return 取り出した値
      */
     public static LocalDateTime getLocalDateTime(JsonElement val, DateTimeFormatter formatter) {
-        val.getAsNumber();
-        if (val.isJsonNull()) {
+        if (val == null || val.isJsonNull()) {
             return null;
         } else if (val.isJsonPrimitive()) {
             if (val.getAsJsonPrimitive().isNumber()) {
@@ -188,7 +169,6 @@ public final class JsonUtils {
                 return localdate;
             }
         }
-        // log.error("JsonType:" + printClass(val));
 
         return null;
     }
@@ -347,7 +327,7 @@ public final class JsonUtils {
     public static String printClass(JsonElement je, String ident) {
 
         StringBuilder sb = null;
-        if (je.isJsonNull()) {
+        if (je == null || je.isJsonNull()) {
             return "null";
         }
 
