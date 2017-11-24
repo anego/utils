@@ -31,6 +31,7 @@ dependencies {
 
 	// ----- Develop
 	compileOnly group: 'org.projectlombok', name: 'lombok', version: 'latest.release'
+	testCompileOnly group: 'org.projectlombok', name: 'lombok', version: 'latest.release'
 	testCompile 'junit:junit:4.12'
 }
 

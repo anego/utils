@@ -253,9 +253,6 @@ public final class JsonUtils {
                 }
 
             }
-            // else {
-            // log.error("JsonType:" + printClass(val));
-            // }
 
             return this;
         }
@@ -300,6 +297,8 @@ public final class JsonUtils {
             JsonElement val = this.json.get(key);
             if (val != null) {
                 cons.accept(val.toString());
+            } else {
+                cons.accept(null);
             }
 
             return this;
