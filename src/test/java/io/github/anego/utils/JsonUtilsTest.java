@@ -79,13 +79,28 @@ public class JsonUtilsTest extends TestCase {
     }
 
     @Test
-    public void testGetString() {
+    public void testGetStringJsonObjectString() {
 
         assertThat(JsonUtils.getString(json, "name"), is("anego"));
         assertThat(JsonUtils.getString(json, "nickname"), nullValue());
         assertThat(JsonUtils.getString(json, "age"), nullValue());
         assertThat(JsonUtils.getString(json, "disable"), nullValue());
         assertThat(JsonUtils.getString(json, "null"), nullValue());
+
+    }
+
+    @Test
+    public void testGetStringJsonObjectStringString() {
+
+        assertThat(JsonUtils.getString(json, "name", null), is("anego"));
+        assertThat(JsonUtils.getString(json, "nickname", null), nullValue());
+        assertThat(JsonUtils.getString(json, "nickname", "anego"), is("anego"));
+        assertThat(JsonUtils.getString(json, "age", null), nullValue());
+        assertThat(JsonUtils.getString(json, "age", "20"), is("20"));
+        assertThat(JsonUtils.getString(json, "disable", null), nullValue());
+        assertThat(JsonUtils.getString(json, "disable", "abc"), is("abc"));
+        assertThat(JsonUtils.getString(json, "null", null), nullValue());
+        assertThat(JsonUtils.getString(json, "null", "emp"), is("emp"));
 
     }
 
@@ -101,12 +116,43 @@ public class JsonUtilsTest extends TestCase {
     }
 
     @Test
+    public void testGetIntegerJsonObjectStringInt() {
+
+        assertThat(JsonUtils.getInteger(json, "name", 0), is(Integer.valueOf(0)));
+        assertThat(JsonUtils.getInteger(json, "name", 1), is(Integer.valueOf(1)));
+        assertThat(JsonUtils.getInteger(json, "nickname", 0), is(Integer.valueOf(0)));
+        assertThat(JsonUtils.getInteger(json, "age", 10), is(Integer.valueOf(30)));
+        assertThat(JsonUtils.getInteger(json, "disable", 5), is(Integer.valueOf(5)));
+        assertThat(JsonUtils.getInteger(json, "null", -1), is(Integer.valueOf(-1)));
+
+    }
+
+
+    @Test
     public void testGetIntegerJsonElement() {
 
         assertThat(JsonUtils.getInteger(json.get("name")), nullValue());
         assertThat(JsonUtils.getInteger(json.get("nickname")), nullValue());
         assertThat(JsonUtils.getInteger(json.get("age")), is(Integer.valueOf(30)));
         assertThat(JsonUtils.getInteger(json.get("disable")), nullValue());
+
+    }
+
+    @Test
+    public void testGetIntegerJsonElementInteger() {
+
+        assertThat(JsonUtils.getInteger(json.get("name"), null), nullValue());
+        assertThat(JsonUtils.getInteger(json.get("name"), Integer.valueOf(0)),
+                is(Integer.valueOf(0)));
+        assertThat(JsonUtils.getInteger(json.get("nickname"), null), nullValue());
+        assertThat(JsonUtils.getInteger(json.get("nickname"), Integer.valueOf(1)),
+                is(Integer.valueOf(1)));
+        assertThat(JsonUtils.getInteger(json.get("age"), null), is(Integer.valueOf(30)));
+        assertThat(JsonUtils.getInteger(json.get("age"), Integer.valueOf(10)),
+                is(Integer.valueOf(30)));
+        assertThat(JsonUtils.getInteger(json.get("disable"), null), nullValue());
+        assertThat(JsonUtils.getInteger(json.get("disable"), Integer.valueOf(10)),
+                is(Integer.valueOf(10)));
 
     }
 
@@ -143,9 +189,41 @@ public class JsonUtilsTest extends TestCase {
     }
 
     @Test
+    public void testGetDateJsonObjectStringDateTimeFormatterDate() {
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("uuuu/MM/dd HH:mm:ss");
+
+        Calendar cal = Calendar.getInstance();
+        cal.set(2017, 10, 1, 13, 15, 25);
+        cal.set(Calendar.MILLISECOND, 0);
+        Date date = cal.getTime();
+
+        Calendar calD = Calendar.getInstance();
+        calD.set(2017, 1, 1, 0, 0, 0);
+        Date defaultVal = calD.getTime();
+
+        assertThat(JsonUtils.getDate(json, "regist", formatter, defaultVal), is(date));
+        assertThat(JsonUtils.getDate(json, "regist_long", formatter, defaultVal), is(date));
+        assertThat(JsonUtils.getDate(json, "nickname", formatter, defaultVal), is(defaultVal));
+        assertThat(JsonUtils.getDate(json, "sub", formatter, defaultVal), is(defaultVal));
+
+    }
+
+    @Test
     public void testGetDateJsonElementDateTimeFormatter() {
 
-        // TODO testGetDateJsonObjectStringDateTimeFormatter でテスト済み
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("uuuu/MM/dd HH:mm:ss");
+
+        Calendar cal = Calendar.getInstance();
+        cal.set(2017, 10, 1, 13, 15, 25);
+        cal.set(Calendar.MILLISECOND, 0);
+        Date date = cal.getTime();
+
+        assertThat(JsonUtils.getDate(json.get("regist"), formatter), is(date));
+        assertThat(JsonUtils.getDate(json.get("regist_long"), formatter), is(date));
+        assertThat(JsonUtils.getDate(json.get("nickname"), formatter), nullValue());
+        assertThat(JsonUtils.getDate(json.get("sub"), formatter), nullValue());
 
     }
 
@@ -159,6 +237,22 @@ public class JsonUtilsTest extends TestCase {
         assertThat(JsonUtils.getLocalDateTime(json, "regist_long", formatter), is(ldt));
         assertThat(JsonUtils.getLocalDateTime(json, "nickname", formatter), nullValue());
         assertThat(JsonUtils.getLocalDateTime(json, "sub", formatter), nullValue());
+
+    }
+
+    @Test
+    public void testGetLocalDateTimeJsonObjectStringDateTimeFormatterLocalDateTime() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("uuuu/MM/dd HH:mm:ss");
+
+        LocalDateTime ldt = LocalDateTime.of(2017, 11, 1, 13, 15, 25);
+
+        LocalDateTime defaultVal = LocalDateTime.of(2017, 1, 1, 0, 0, 0);
+
+        assertThat(JsonUtils.getLocalDateTime(json, "regist", formatter, defaultVal), is(ldt));
+        assertThat(JsonUtils.getLocalDateTime(json, "regist_long", formatter, defaultVal), is(ldt));
+        assertThat(JsonUtils.getLocalDateTime(json, "nickname", formatter, defaultVal),
+                is(defaultVal));
+        assertThat(JsonUtils.getLocalDateTime(json, "sub", formatter, defaultVal), is(defaultVal));
 
     }
 
@@ -212,6 +306,18 @@ public class JsonUtilsTest extends TestCase {
         assertThat(model.getNumber(), nullValue());
     }
 
+    public void testBindJsonSetIntegerStringInt() {
+
+        TestModel model = new TestModel();
+
+        JsonUtils.bind(json).setInteger("age", model::setNumber, 10);
+        assertThat(model.getNumber(), notNullValue());
+        assertThat(model.getNumber(), is(Integer.valueOf(30)));
+
+        JsonUtils.bind(json).setInteger("name", model::setNumber, 10);
+        assertThat(model.getNumber(), is(Integer.valueOf(10)));
+    }
+
     public void testBindJsonSetIntegerInteger() {
         TestModel model = new TestModel();
 
@@ -236,7 +342,20 @@ public class JsonUtilsTest extends TestCase {
 
     }
 
-    public void testBindJsonSetIntegerList() {
+    public void testBindJsonSetStringString() {
+
+        TestModel model = new TestModel();
+
+        JsonUtils.bind(json).setString("name", model::setStr, "default");
+        assertThat(model.getStr(), notNullValue());
+        assertThat(model.getStr(), is("anego"));
+
+        JsonUtils.bind(json).setString("noname", model::setStr, "default");
+        assertThat(model.getStr(), is("default"));
+
+    }
+
+    public void testBindJsonSetIntegerListString() {
 
         TestModel model = new TestModel();
 
@@ -257,7 +376,30 @@ public class JsonUtilsTest extends TestCase {
         assertThat(model.getAry2(), nullValue());
     }
 
-    public void testBindJsonSetDate() {
+    public void testBindJsonSetIntegerListStringInteger() {
+
+        TestModel model = new TestModel();
+
+        JsonUtils.bind(json).setIntegerList("ary", Integer.valueOf(1), model::setAry1,
+                model::setAry2);
+        assertThat(model.getAry1(), notNullValue());
+        assertThat(model.getAry1(), is(Integer.valueOf(10)));
+        assertThat(model.getAry2(), notNullValue());
+        assertThat(model.getAry2(), is(Integer.valueOf(20)));
+
+        model = new TestModel();
+        JsonUtils.bind(json).setIntegerList("ary", Integer.valueOf(1), model::setAry2);
+        assertThat(model.getAry1(), nullValue());
+        assertThat(model.getAry2(), notNullValue());
+        assertThat(model.getAry2(), is(Integer.valueOf(10)));
+
+        JsonUtils.bind(json).setIntegerList("aaa", Integer.valueOf(1), model::setAry1,
+                model::setAry2);
+        assertThat(model.getAry1(), is(Integer.valueOf(1)));
+        assertThat(model.getAry2(), is(Integer.valueOf(1)));
+    }
+
+    public void testBindJsonSetDateString() {
 
         TestModel model = new TestModel();
 
@@ -275,7 +417,29 @@ public class JsonUtilsTest extends TestCase {
         assertThat(model.getDay(), nullValue());
     }
 
-    public void testBindJsonSetLocalDateTime() {
+    public void testBindJsonSetDateStringDate() {
+
+        TestModel model = new TestModel();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("uuuu/MM/dd HH:mm:ss");
+        Calendar cal = Calendar.getInstance();
+        cal.set(2017, 10, 1, 13, 15, 25);
+        cal.set(Calendar.MILLISECOND, 0);
+        Date date = cal.getTime();
+
+        Calendar calD = Calendar.getInstance();
+        calD.set(2017, 1, 1, 0, 0, 0);
+        Date dateD = calD.getTime();
+
+        JsonUtils.bind(json).setDate("regist", model::setDay, formatter, dateD);
+        assertThat(model.getDay(), notNullValue());
+        assertThat(model.getDay(), is(date));
+
+        JsonUtils.bind(json).setDate("aaaa", model::setDay, formatter, dateD);
+        assertThat(model.getDay(), is(dateD));
+    }
+
+    public void testBindJsonSetLocalDateTimeString() {
         TestModel model = new TestModel();
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("uuuu/MM/dd HH:mm:ss");
@@ -287,6 +451,21 @@ public class JsonUtilsTest extends TestCase {
 
         JsonUtils.bind(json).setLocalDateTime("aaaa", model::setLocalDay, formatter);
         assertThat(model.getLocalDay(), nullValue());
+    }
+
+    public void testBindJsonSetLocalDateTimeStringLocalDateTime() {
+        TestModel model = new TestModel();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("uuuu/MM/dd HH:mm:ss");
+        LocalDateTime ldt = LocalDateTime.of(2017, 11, 1, 13, 15, 25);
+        LocalDateTime ldtD = LocalDateTime.of(2017, 1, 1, 0, 0, 0);
+
+        JsonUtils.bind(json).setLocalDateTime("regist", model::setLocalDay, formatter, ldtD);
+        assertThat(model.getLocalDay(), notNullValue());
+        assertThat(model.getLocalDay(), is(ldt));
+
+        JsonUtils.bind(json).setLocalDateTime("aaaa", model::setLocalDay, formatter, ldtD);
+        assertThat(model.getLocalDay(), is(ldtD));
     }
 
     public void testBindJsonSetJson() {

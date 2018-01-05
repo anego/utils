@@ -10,7 +10,7 @@ repositories {
 	}
 }
 dependencies {
-	compile 'io.github.anego:utils:1.0.0'
+	compile 'io.github.anego:utils:1.0.2'
 }
 ```
 
