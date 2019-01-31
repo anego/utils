@@ -19,7 +19,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 @SuppressWarnings("javadoc")
-public class JsonUtilsTest extends TestCase {
+public class GsonUtilsTest extends TestCase {
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {}
@@ -51,7 +51,7 @@ public class JsonUtilsTest extends TestCase {
         json.add("sub", jsonChild);
         json.add("null", null);
 
-        System.out.println(JsonUtils.printClass(json));
+        System.out.println(GsonUtils.printClass(json));
     }
 
     @After
@@ -60,7 +60,7 @@ public class JsonUtilsTest extends TestCase {
     @Test
     public void testJsonUtils() {
         try {
-            Constructor<?>[] constructors = JsonUtils.class.getDeclaredConstructors();
+            Constructor<?>[] constructors = GsonUtils.class.getDeclaredConstructors();
 
             assertEquals(Integer.valueOf(constructors.length), Integer.valueOf(1));
 
@@ -72,7 +72,7 @@ public class JsonUtilsTest extends TestCase {
             defaultConstructor.setAccessible(true);
             Object instance = defaultConstructor.newInstance();
             assertNotNull(instance);
-            assertThat(instance, instanceOf(JsonUtils.class));
+            assertThat(instance, instanceOf(GsonUtils.class));
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -81,49 +81,49 @@ public class JsonUtilsTest extends TestCase {
     @Test
     public void testGetStringJsonObjectString() {
 
-        assertThat(JsonUtils.getString(json, "name"), is("anego"));
-        assertThat(JsonUtils.getString(json, "nickname"), nullValue());
-        assertThat(JsonUtils.getString(json, "age"), nullValue());
-        assertThat(JsonUtils.getString(json, "disable"), nullValue());
-        assertThat(JsonUtils.getString(json, "null"), nullValue());
+        assertThat(GsonUtils.getString(json, "name"), is("anego"));
+        assertThat(GsonUtils.getString(json, "nickname"), nullValue());
+        assertThat(GsonUtils.getString(json, "age"), nullValue());
+        assertThat(GsonUtils.getString(json, "disable"), nullValue());
+        assertThat(GsonUtils.getString(json, "null"), nullValue());
 
     }
 
     @Test
     public void testGetStringJsonObjectStringString() {
 
-        assertThat(JsonUtils.getString(json, "name", null), is("anego"));
-        assertThat(JsonUtils.getString(json, "nickname", null), nullValue());
-        assertThat(JsonUtils.getString(json, "nickname", "anego"), is("anego"));
-        assertThat(JsonUtils.getString(json, "age", null), nullValue());
-        assertThat(JsonUtils.getString(json, "age", "20"), is("20"));
-        assertThat(JsonUtils.getString(json, "disable", null), nullValue());
-        assertThat(JsonUtils.getString(json, "disable", "abc"), is("abc"));
-        assertThat(JsonUtils.getString(json, "null", null), nullValue());
-        assertThat(JsonUtils.getString(json, "null", "emp"), is("emp"));
+        assertThat(GsonUtils.getString(json, "name", null), is("anego"));
+        assertThat(GsonUtils.getString(json, "nickname", null), nullValue());
+        assertThat(GsonUtils.getString(json, "nickname", "anego"), is("anego"));
+        assertThat(GsonUtils.getString(json, "age", null), nullValue());
+        assertThat(GsonUtils.getString(json, "age", "20"), is("20"));
+        assertThat(GsonUtils.getString(json, "disable", null), nullValue());
+        assertThat(GsonUtils.getString(json, "disable", "abc"), is("abc"));
+        assertThat(GsonUtils.getString(json, "null", null), nullValue());
+        assertThat(GsonUtils.getString(json, "null", "emp"), is("emp"));
 
     }
 
     @Test
     public void testGetIntegerJsonObjectString() {
 
-        assertThat(JsonUtils.getInteger(json, "name"), nullValue());
-        assertThat(JsonUtils.getInteger(json, "nickname"), nullValue());
-        assertThat(JsonUtils.getInteger(json, "age"), is(Integer.valueOf(30)));
-        assertThat(JsonUtils.getInteger(json, "disable"), nullValue());
-        assertThat(JsonUtils.getInteger(json, "null"), nullValue());
+        assertThat(GsonUtils.getInteger(json, "name"), nullValue());
+        assertThat(GsonUtils.getInteger(json, "nickname"), nullValue());
+        assertThat(GsonUtils.getInteger(json, "age"), is(Integer.valueOf(30)));
+        assertThat(GsonUtils.getInteger(json, "disable"), nullValue());
+        assertThat(GsonUtils.getInteger(json, "null"), nullValue());
 
     }
 
     @Test
     public void testGetIntegerJsonObjectStringInt() {
 
-        assertThat(JsonUtils.getInteger(json, "name", 0), is(Integer.valueOf(0)));
-        assertThat(JsonUtils.getInteger(json, "name", 1), is(Integer.valueOf(1)));
-        assertThat(JsonUtils.getInteger(json, "nickname", 0), is(Integer.valueOf(0)));
-        assertThat(JsonUtils.getInteger(json, "age", 10), is(Integer.valueOf(30)));
-        assertThat(JsonUtils.getInteger(json, "disable", 5), is(Integer.valueOf(5)));
-        assertThat(JsonUtils.getInteger(json, "null", -1), is(Integer.valueOf(-1)));
+        assertThat(GsonUtils.getInteger(json, "name", 0), is(Integer.valueOf(0)));
+        assertThat(GsonUtils.getInteger(json, "name", 1), is(Integer.valueOf(1)));
+        assertThat(GsonUtils.getInteger(json, "nickname", 0), is(Integer.valueOf(0)));
+        assertThat(GsonUtils.getInteger(json, "age", 10), is(Integer.valueOf(30)));
+        assertThat(GsonUtils.getInteger(json, "disable", 5), is(Integer.valueOf(5)));
+        assertThat(GsonUtils.getInteger(json, "null", -1), is(Integer.valueOf(-1)));
 
     }
 
@@ -131,27 +131,27 @@ public class JsonUtilsTest extends TestCase {
     @Test
     public void testGetIntegerJsonElement() {
 
-        assertThat(JsonUtils.getInteger(json.get("name")), nullValue());
-        assertThat(JsonUtils.getInteger(json.get("nickname")), nullValue());
-        assertThat(JsonUtils.getInteger(json.get("age")), is(Integer.valueOf(30)));
-        assertThat(JsonUtils.getInteger(json.get("disable")), nullValue());
+        assertThat(GsonUtils.getInteger(json.get("name")), nullValue());
+        assertThat(GsonUtils.getInteger(json.get("nickname")), nullValue());
+        assertThat(GsonUtils.getInteger(json.get("age")), is(Integer.valueOf(30)));
+        assertThat(GsonUtils.getInteger(json.get("disable")), nullValue());
 
     }
 
     @Test
     public void testGetIntegerJsonElementInteger() {
 
-        assertThat(JsonUtils.getInteger(json.get("name"), null), nullValue());
-        assertThat(JsonUtils.getInteger(json.get("name"), Integer.valueOf(0)),
+        assertThat(GsonUtils.getInteger(json.get("name"), null), nullValue());
+        assertThat(GsonUtils.getInteger(json.get("name"), Integer.valueOf(0)),
                 is(Integer.valueOf(0)));
-        assertThat(JsonUtils.getInteger(json.get("nickname"), null), nullValue());
-        assertThat(JsonUtils.getInteger(json.get("nickname"), Integer.valueOf(1)),
+        assertThat(GsonUtils.getInteger(json.get("nickname"), null), nullValue());
+        assertThat(GsonUtils.getInteger(json.get("nickname"), Integer.valueOf(1)),
                 is(Integer.valueOf(1)));
-        assertThat(JsonUtils.getInteger(json.get("age"), null), is(Integer.valueOf(30)));
-        assertThat(JsonUtils.getInteger(json.get("age"), Integer.valueOf(10)),
+        assertThat(GsonUtils.getInteger(json.get("age"), null), is(Integer.valueOf(30)));
+        assertThat(GsonUtils.getInteger(json.get("age"), Integer.valueOf(10)),
                 is(Integer.valueOf(30)));
-        assertThat(JsonUtils.getInteger(json.get("disable"), null), nullValue());
-        assertThat(JsonUtils.getInteger(json.get("disable"), Integer.valueOf(10)),
+        assertThat(GsonUtils.getInteger(json.get("disable"), null), nullValue());
+        assertThat(GsonUtils.getInteger(json.get("disable"), Integer.valueOf(10)),
                 is(Integer.valueOf(10)));
 
     }
@@ -159,13 +159,13 @@ public class JsonUtilsTest extends TestCase {
     @Test
     public void testGetValue() {
 
-        assertThat(JsonUtils.getValue(json.get("name"), v -> {
+        assertThat(GsonUtils.getValue(json.get("name"), v -> {
             return v;
         }), notNullValue());
-        assertThat(JsonUtils.getValue(json.get("nickname"), v -> {
+        assertThat(GsonUtils.getValue(json.get("nickname"), v -> {
             return v;
         }), nullValue());
-        assertThat(JsonUtils.getValue(null, v -> {
+        assertThat(GsonUtils.getValue(null, v -> {
             return v;
         }), nullValue());
 
@@ -181,10 +181,10 @@ public class JsonUtilsTest extends TestCase {
         cal.set(Calendar.MILLISECOND, 0);
         Date date = cal.getTime();
 
-        assertThat(JsonUtils.getDate(json, "regist", formatter), is(date));
-        assertThat(JsonUtils.getDate(json, "regist_long", formatter), is(date));
-        assertThat(JsonUtils.getDate(json, "nickname", formatter), nullValue());
-        assertThat(JsonUtils.getDate(json, "sub", formatter), nullValue());
+        assertThat(GsonUtils.getDate(json, "regist", formatter), is(date));
+        assertThat(GsonUtils.getDate(json, "regist_long", formatter), is(date));
+        assertThat(GsonUtils.getDate(json, "nickname", formatter), nullValue());
+        assertThat(GsonUtils.getDate(json, "sub", formatter), nullValue());
 
     }
 
@@ -202,10 +202,10 @@ public class JsonUtilsTest extends TestCase {
         calD.set(2017, 1, 1, 0, 0, 0);
         Date defaultVal = calD.getTime();
 
-        assertThat(JsonUtils.getDate(json, "regist", formatter, defaultVal), is(date));
-        assertThat(JsonUtils.getDate(json, "regist_long", formatter, defaultVal), is(date));
-        assertThat(JsonUtils.getDate(json, "nickname", formatter, defaultVal), is(defaultVal));
-        assertThat(JsonUtils.getDate(json, "sub", formatter, defaultVal), is(defaultVal));
+        assertThat(GsonUtils.getDate(json, "regist", formatter, defaultVal), is(date));
+        assertThat(GsonUtils.getDate(json, "regist_long", formatter, defaultVal), is(date));
+        assertThat(GsonUtils.getDate(json, "nickname", formatter, defaultVal), is(defaultVal));
+        assertThat(GsonUtils.getDate(json, "sub", formatter, defaultVal), is(defaultVal));
 
     }
 
@@ -220,10 +220,10 @@ public class JsonUtilsTest extends TestCase {
         cal.set(Calendar.MILLISECOND, 0);
         Date date = cal.getTime();
 
-        assertThat(JsonUtils.getDate(json.get("regist"), formatter), is(date));
-        assertThat(JsonUtils.getDate(json.get("regist_long"), formatter), is(date));
-        assertThat(JsonUtils.getDate(json.get("nickname"), formatter), nullValue());
-        assertThat(JsonUtils.getDate(json.get("sub"), formatter), nullValue());
+        assertThat(GsonUtils.getDate(json.get("regist"), formatter), is(date));
+        assertThat(GsonUtils.getDate(json.get("regist_long"), formatter), is(date));
+        assertThat(GsonUtils.getDate(json.get("nickname"), formatter), nullValue());
+        assertThat(GsonUtils.getDate(json.get("sub"), formatter), nullValue());
 
     }
 
@@ -233,10 +233,10 @@ public class JsonUtilsTest extends TestCase {
 
         LocalDateTime ldt = LocalDateTime.of(2017, 11, 1, 13, 15, 25);
 
-        assertThat(JsonUtils.getLocalDateTime(json, "regist", formatter), is(ldt));
-        assertThat(JsonUtils.getLocalDateTime(json, "regist_long", formatter), is(ldt));
-        assertThat(JsonUtils.getLocalDateTime(json, "nickname", formatter), nullValue());
-        assertThat(JsonUtils.getLocalDateTime(json, "sub", formatter), nullValue());
+        assertThat(GsonUtils.getLocalDateTime(json, "regist", formatter), is(ldt));
+        assertThat(GsonUtils.getLocalDateTime(json, "regist_long", formatter), is(ldt));
+        assertThat(GsonUtils.getLocalDateTime(json, "nickname", formatter), nullValue());
+        assertThat(GsonUtils.getLocalDateTime(json, "sub", formatter), nullValue());
 
     }
 
@@ -248,11 +248,11 @@ public class JsonUtilsTest extends TestCase {
 
         LocalDateTime defaultVal = LocalDateTime.of(2017, 1, 1, 0, 0, 0);
 
-        assertThat(JsonUtils.getLocalDateTime(json, "regist", formatter, defaultVal), is(ldt));
-        assertThat(JsonUtils.getLocalDateTime(json, "regist_long", formatter, defaultVal), is(ldt));
-        assertThat(JsonUtils.getLocalDateTime(json, "nickname", formatter, defaultVal),
+        assertThat(GsonUtils.getLocalDateTime(json, "regist", formatter, defaultVal), is(ldt));
+        assertThat(GsonUtils.getLocalDateTime(json, "regist_long", formatter, defaultVal), is(ldt));
+        assertThat(GsonUtils.getLocalDateTime(json, "nickname", formatter, defaultVal),
                 is(defaultVal));
-        assertThat(JsonUtils.getLocalDateTime(json, "sub", formatter, defaultVal), is(defaultVal));
+        assertThat(GsonUtils.getLocalDateTime(json, "sub", formatter, defaultVal), is(defaultVal));
 
     }
 
@@ -264,15 +264,15 @@ public class JsonUtilsTest extends TestCase {
     @Test
     public void testBind() {
 
-        assertThat(JsonUtils.bind(json), notNullValue());
+        assertThat(GsonUtils.bind(json), notNullValue());
 
     }
 
     @Test
     public void testPrintClassJsonElement() {
 
-        assertThat(JsonUtils.printClass(json), notNullValue());
-        assertThat(JsonUtils.printClass(null), is("null"));
+        assertThat(GsonUtils.printClass(json), notNullValue());
+        assertThat(GsonUtils.printClass(null), is("null"));
 
 
         JsonElement je = new JsonElement() {
@@ -282,13 +282,13 @@ public class JsonUtilsTest extends TestCase {
                 return null;
             }
         };
-        assertThat(JsonUtils.printClass(je), notNullValue());
+        assertThat(GsonUtils.printClass(je), notNullValue());
     }
 
     @Test
     public void testPrintClassJsonElementString() {
-        assertThat(JsonUtils.printClass(mstship, "  "), notNullValue());
-        assertThat(JsonUtils.printClass(null, "  "), is("null"));
+        assertThat(GsonUtils.printClass(mstship, "  "), notNullValue());
+        assertThat(GsonUtils.printClass(null, "  "), is("null"));
 
 
     }
@@ -298,11 +298,11 @@ public class JsonUtilsTest extends TestCase {
 
         TestModel model = new TestModel();
 
-        JsonUtils.bind(json).setInteger("age", model::setNumber);
+        GsonUtils.bind(json).setInteger("age", model::setNumber);
         assertThat(model.getNumber(), notNullValue());
         assertThat(model.getNumber(), is(Integer.valueOf(30)));
 
-        JsonUtils.bind(json).setInteger("name", model::setNumber);
+        GsonUtils.bind(json).setInteger("name", model::setNumber);
         assertThat(model.getNumber(), nullValue());
     }
 
@@ -310,22 +310,22 @@ public class JsonUtilsTest extends TestCase {
 
         TestModel model = new TestModel();
 
-        JsonUtils.bind(json).setInteger("age", model::setNumber, 10);
+        GsonUtils.bind(json).setInteger("age", model::setNumber, 10);
         assertThat(model.getNumber(), notNullValue());
         assertThat(model.getNumber(), is(Integer.valueOf(30)));
 
-        JsonUtils.bind(json).setInteger("name", model::setNumber, 10);
+        GsonUtils.bind(json).setInteger("name", model::setNumber, 10);
         assertThat(model.getNumber(), is(Integer.valueOf(10)));
     }
 
     public void testBindJsonSetIntegerInteger() {
         TestModel model = new TestModel();
 
-        JsonUtils.bind(json).setInteger(Integer.valueOf(20), model::setNumber);
+        GsonUtils.bind(json).setInteger(Integer.valueOf(20), model::setNumber);
         assertThat(model.getNumber(), notNullValue());
         assertThat(model.getNumber(), is(Integer.valueOf(20)));
 
-        JsonUtils.bind(json).setInteger((Integer) null, model::setNumber);
+        GsonUtils.bind(json).setInteger((Integer) null, model::setNumber);
         assertThat(model.getNumber(), nullValue());
     }
 
@@ -333,11 +333,11 @@ public class JsonUtilsTest extends TestCase {
 
         TestModel model = new TestModel();
 
-        JsonUtils.bind(json).setString("name", model::setStr);
+        GsonUtils.bind(json).setString("name", model::setStr);
         assertThat(model.getStr(), notNullValue());
         assertThat(model.getStr(), is("anego"));
 
-        JsonUtils.bind(json).setString("noname", model::setStr);
+        GsonUtils.bind(json).setString("noname", model::setStr);
         assertThat(model.getStr(), nullValue());
 
     }
@@ -346,11 +346,11 @@ public class JsonUtilsTest extends TestCase {
 
         TestModel model = new TestModel();
 
-        JsonUtils.bind(json).setString("name", model::setStr, "default");
+        GsonUtils.bind(json).setString("name", model::setStr, "default");
         assertThat(model.getStr(), notNullValue());
         assertThat(model.getStr(), is("anego"));
 
-        JsonUtils.bind(json).setString("noname", model::setStr, "default");
+        GsonUtils.bind(json).setString("noname", model::setStr, "default");
         assertThat(model.getStr(), is("default"));
 
     }
@@ -359,19 +359,19 @@ public class JsonUtilsTest extends TestCase {
 
         TestModel model = new TestModel();
 
-        JsonUtils.bind(json).setIntegerList("ary", model::setAry1, model::setAry2);
+        GsonUtils.bind(json).setIntegerList("ary", model::setAry1, model::setAry2);
         assertThat(model.getAry1(), notNullValue());
         assertThat(model.getAry1(), is(Integer.valueOf(10)));
         assertThat(model.getAry2(), notNullValue());
         assertThat(model.getAry2(), is(Integer.valueOf(20)));
 
         model = new TestModel();
-        JsonUtils.bind(json).setIntegerList("ary", model::setAry2);
+        GsonUtils.bind(json).setIntegerList("ary", model::setAry2);
         assertThat(model.getAry1(), nullValue());
         assertThat(model.getAry2(), notNullValue());
         assertThat(model.getAry2(), is(Integer.valueOf(10)));
 
-        JsonUtils.bind(json).setIntegerList("aaa", model::setAry1, model::setAry2);
+        GsonUtils.bind(json).setIntegerList("aaa", model::setAry1, model::setAry2);
         assertThat(model.getAry1(), nullValue());
         assertThat(model.getAry2(), nullValue());
     }
@@ -380,7 +380,7 @@ public class JsonUtilsTest extends TestCase {
 
         TestModel model = new TestModel();
 
-        JsonUtils.bind(json).setIntegerList("ary", Integer.valueOf(1), model::setAry1,
+        GsonUtils.bind(json).setIntegerList("ary", Integer.valueOf(1), model::setAry1,
                 model::setAry2);
         assertThat(model.getAry1(), notNullValue());
         assertThat(model.getAry1(), is(Integer.valueOf(10)));
@@ -388,12 +388,12 @@ public class JsonUtilsTest extends TestCase {
         assertThat(model.getAry2(), is(Integer.valueOf(20)));
 
         model = new TestModel();
-        JsonUtils.bind(json).setIntegerList("ary", Integer.valueOf(1), model::setAry2);
+        GsonUtils.bind(json).setIntegerList("ary", Integer.valueOf(1), model::setAry2);
         assertThat(model.getAry1(), nullValue());
         assertThat(model.getAry2(), notNullValue());
         assertThat(model.getAry2(), is(Integer.valueOf(10)));
 
-        JsonUtils.bind(json).setIntegerList("aaa", Integer.valueOf(1), model::setAry1,
+        GsonUtils.bind(json).setIntegerList("aaa", Integer.valueOf(1), model::setAry1,
                 model::setAry2);
         assertThat(model.getAry1(), is(Integer.valueOf(1)));
         assertThat(model.getAry2(), is(Integer.valueOf(1)));
@@ -409,11 +409,11 @@ public class JsonUtilsTest extends TestCase {
         cal.set(Calendar.MILLISECOND, 0);
         Date date = cal.getTime();
 
-        JsonUtils.bind(json).setDate("regist", model::setDay, formatter);
+        GsonUtils.bind(json).setDate("regist", model::setDay, formatter);
         assertThat(model.getDay(), notNullValue());
         assertThat(model.getDay(), is(date));
 
-        JsonUtils.bind(json).setDate("aaaa", model::setDay, formatter);
+        GsonUtils.bind(json).setDate("aaaa", model::setDay, formatter);
         assertThat(model.getDay(), nullValue());
     }
 
@@ -431,11 +431,11 @@ public class JsonUtilsTest extends TestCase {
         calD.set(2017, 1, 1, 0, 0, 0);
         Date dateD = calD.getTime();
 
-        JsonUtils.bind(json).setDate("regist", model::setDay, formatter, dateD);
+        GsonUtils.bind(json).setDate("regist", model::setDay, formatter, dateD);
         assertThat(model.getDay(), notNullValue());
         assertThat(model.getDay(), is(date));
 
-        JsonUtils.bind(json).setDate("aaaa", model::setDay, formatter, dateD);
+        GsonUtils.bind(json).setDate("aaaa", model::setDay, formatter, dateD);
         assertThat(model.getDay(), is(dateD));
     }
 
@@ -445,11 +445,11 @@ public class JsonUtilsTest extends TestCase {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("uuuu/MM/dd HH:mm:ss");
         LocalDateTime ldt = LocalDateTime.of(2017, 11, 1, 13, 15, 25);
 
-        JsonUtils.bind(json).setLocalDateTime("regist", model::setLocalDay, formatter);
+        GsonUtils.bind(json).setLocalDateTime("regist", model::setLocalDay, formatter);
         assertThat(model.getLocalDay(), notNullValue());
         assertThat(model.getLocalDay(), is(ldt));
 
-        JsonUtils.bind(json).setLocalDateTime("aaaa", model::setLocalDay, formatter);
+        GsonUtils.bind(json).setLocalDateTime("aaaa", model::setLocalDay, formatter);
         assertThat(model.getLocalDay(), nullValue());
     }
 
@@ -460,26 +460,26 @@ public class JsonUtilsTest extends TestCase {
         LocalDateTime ldt = LocalDateTime.of(2017, 11, 1, 13, 15, 25);
         LocalDateTime ldtD = LocalDateTime.of(2017, 1, 1, 0, 0, 0);
 
-        JsonUtils.bind(json).setLocalDateTime("regist", model::setLocalDay, formatter, ldtD);
+        GsonUtils.bind(json).setLocalDateTime("regist", model::setLocalDay, formatter, ldtD);
         assertThat(model.getLocalDay(), notNullValue());
         assertThat(model.getLocalDay(), is(ldt));
 
-        JsonUtils.bind(json).setLocalDateTime("aaaa", model::setLocalDay, formatter, ldtD);
+        GsonUtils.bind(json).setLocalDateTime("aaaa", model::setLocalDay, formatter, ldtD);
         assertThat(model.getLocalDay(), is(ldtD));
     }
 
     public void testBindJsonSetJson() {
         TestModel model = new TestModel();
 
-        JsonUtils.bind(json).setJson("name", model::setStr);
+        GsonUtils.bind(json).setJson("name", model::setStr);
         assertThat(model.getStr(), notNullValue());
         assertThat(model.getStr(), is("\"anego\""));
 
-        JsonUtils.bind(json).setJson("age", model::setStr);
+        GsonUtils.bind(json).setJson("age", model::setStr);
         assertThat(model.getStr(), notNullValue());
         assertThat(model.getStr(), is("30"));
 
-        JsonUtils.bind(json).setJson("aaa", model::setStr);
+        GsonUtils.bind(json).setJson("aaa", model::setStr);
         assertThat(model.getStr(), nullValue());
     }
 

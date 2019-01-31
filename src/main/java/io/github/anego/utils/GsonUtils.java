@@ -15,14 +15,14 @@ import java.util.function.Function;
 import lombok.AllArgsConstructor;
 
 /**
- * JSON関連の共通処理.
+ * Gson関連の共通処理.
  *
  * @author anego &#60;anego@project-life.net&#62;
  *
  */
-public final class JsonUtils {
+public final class GsonUtils {
 
-    private JsonUtils() {}
+    private GsonUtils() {}
 
     /**
      * keyでマップされた値をStringとして取り出す。<br>
@@ -34,7 +34,7 @@ public final class JsonUtils {
      */
     public static String getString(JsonObject json, String key) {
 
-        return JsonUtils.getString(json, key, null);
+        return GsonUtils.getString(json, key, null);
     }
 
 
@@ -69,7 +69,7 @@ public final class JsonUtils {
 
         JsonElement value = json.get(key);
 
-        return JsonUtils.getInteger(value, null);
+        return GsonUtils.getInteger(value, null);
     }
 
 
@@ -86,7 +86,7 @@ public final class JsonUtils {
 
         JsonElement value = json.get(key);
 
-        return JsonUtils.getInteger(value, Integer.valueOf(defaultVal));
+        return GsonUtils.getInteger(value, Integer.valueOf(defaultVal));
     }
 
     /**
@@ -97,7 +97,7 @@ public final class JsonUtils {
      * @return 取り出した値
      */
     public static Integer getInteger(JsonElement val) {
-        return JsonUtils.getInteger(val, null);
+        return GsonUtils.getInteger(val, null);
     }
 
     /**
@@ -118,8 +118,10 @@ public final class JsonUtils {
     }
 
     /**
-     * JsonValueからfuncの変換関数を使用して値を取り出す.
+     * valからfuncの変換関数を使用して値を取り出す.
      *
+     * @param <T> JsonElement
+     * @param <R> 変換関数
      * @param val JsonObject
      * @param func 変換関数
      * @return 取り出した値
@@ -143,7 +145,7 @@ public final class JsonUtils {
      * @return 取り出した日時
      */
     public static Date getDate(JsonObject json, String key, DateTimeFormatter formatter) {
-        return JsonUtils.getDate(json, key, formatter, null);
+        return GsonUtils.getDate(json, key, formatter, null);
     }
 
     /**
@@ -162,7 +164,7 @@ public final class JsonUtils {
 
         JsonElement value = json.get(key);
 
-        return JsonUtils.getDate(value, formatter, defaultVal);
+        return GsonUtils.getDate(value, formatter, defaultVal);
     }
 
     /**
@@ -176,7 +178,7 @@ public final class JsonUtils {
      */
     public static Date getDate(JsonElement val, DateTimeFormatter formatter) {
 
-        return JsonUtils.getDate(val, formatter, null);
+        return GsonUtils.getDate(val, formatter, null);
     }
 
     /**
@@ -219,7 +221,7 @@ public final class JsonUtils {
 
         JsonElement value = json.get(key);
 
-        return JsonUtils.getLocalDateTime(value, formatter);
+        return GsonUtils.getLocalDateTime(value, formatter);
     }
 
     /**
@@ -238,7 +240,7 @@ public final class JsonUtils {
 
         JsonElement value = json.get(key);
 
-        return JsonUtils.getLocalDateTime(value, formatter, defaultVal);
+        return GsonUtils.getLocalDateTime(value, formatter, defaultVal);
     }
 
     /**
@@ -252,7 +254,7 @@ public final class JsonUtils {
      */
     public static LocalDateTime getLocalDateTime(JsonElement val, DateTimeFormatter formatter) {
 
-        return JsonUtils.getLocalDateTime(val, formatter, null);
+        return GsonUtils.getLocalDateTime(val, formatter, null);
     }
 
     /**
@@ -322,7 +324,7 @@ public final class JsonUtils {
          * @return {@link BindJson}
          */
         public final BindJson setInteger(String key, Consumer<Integer> cons) {
-            cons.accept(JsonUtils.getInteger(this.json, key));
+            cons.accept(GsonUtils.getInteger(this.json, key));
             return this;
         }
 
@@ -335,7 +337,7 @@ public final class JsonUtils {
          * @return {@link BindJson}
          */
         public final BindJson setInteger(String key, Consumer<Integer> cons, int defaultVal) {
-            cons.accept(JsonUtils.getInteger(this.json, key, defaultVal));
+            cons.accept(GsonUtils.getInteger(this.json, key, defaultVal));
             return this;
         }
 
@@ -347,7 +349,7 @@ public final class JsonUtils {
          * @return {@link BindJson}
          **/
         public final BindJson setString(String key, Consumer<String> cons) {
-            cons.accept(JsonUtils.getString(this.json, key));
+            cons.accept(GsonUtils.getString(this.json, key));
             return this;
         }
 
@@ -360,7 +362,7 @@ public final class JsonUtils {
          * @return {@link BindJson}
          **/
         public final BindJson setString(String key, Consumer<String> cons, String defaultVal) {
-            cons.accept(JsonUtils.getString(this.json, key, defaultVal));
+            cons.accept(GsonUtils.getString(this.json, key, defaultVal));
             return this;
         }
 
@@ -398,7 +400,7 @@ public final class JsonUtils {
                 JsonArray ja = ((JsonArray) val);
 
                 for (int index = 0; index < ja.size() && index < cons.length; index++) {
-                    cons[index].accept(JsonUtils.getInteger(ja.get(index), defaultVal));
+                    cons[index].accept(GsonUtils.getInteger(ja.get(index), defaultVal));
                 }
 
             }
@@ -416,7 +418,7 @@ public final class JsonUtils {
          */
         public final BindJson setDate(String key, Consumer<Date> cons,
                 DateTimeFormatter formatter) {
-            cons.accept(JsonUtils.getDate(this.json, key, formatter));
+            cons.accept(GsonUtils.getDate(this.json, key, formatter));
             return this;
         }
 
@@ -431,7 +433,7 @@ public final class JsonUtils {
          */
         public final BindJson setDate(String key, Consumer<Date> cons, DateTimeFormatter formatter,
                 Date defaultVal) {
-            cons.accept(JsonUtils.getDate(this.json, key, formatter, defaultVal));
+            cons.accept(GsonUtils.getDate(this.json, key, formatter, defaultVal));
             return this;
         }
 
@@ -445,7 +447,7 @@ public final class JsonUtils {
          */
         public final BindJson setLocalDateTime(String key, Consumer<LocalDateTime> cons,
                 DateTimeFormatter formatter) {
-            cons.accept(JsonUtils.getLocalDateTime(this.json, key, formatter));
+            cons.accept(GsonUtils.getLocalDateTime(this.json, key, formatter));
             return this;
         }
 
@@ -460,7 +462,7 @@ public final class JsonUtils {
          */
         public final BindJson setLocalDateTime(String key, Consumer<LocalDateTime> cons,
                 DateTimeFormatter formatter, LocalDateTime defaultVal) {
-            cons.accept(JsonUtils.getLocalDateTime(this.json, key, formatter, defaultVal));
+            cons.accept(GsonUtils.getLocalDateTime(this.json, key, formatter, defaultVal));
             return this;
         }
 
